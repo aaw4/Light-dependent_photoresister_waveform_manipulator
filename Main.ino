@@ -45,7 +45,7 @@ void loop()  {
   // PLAY SOUNDS
   if(state == 0){
     if(lightVal < lightCal - sensitivity){
-      analogWrite(DAC0, 255);
+      analogWrite(DAC0, 1023);
       delayMicroseconds(delayTime);
       analogWrite(DAC0, 0);
       delayMicroseconds(delayTime);
@@ -68,8 +68,8 @@ void loop()  {
     while(lightVal < lightCal - sensitivity){
       hertz = analogRead(A1);
       if(hertz == 0) hertz = 1;
-      int soundPeak = 255;
-      int delayTime = (1000000 / (hertz * 2))/(soundPeak + 1);
+      int soundPeak = 1023;
+      int delayTime = (1000000 / (hertz))/(soundPeak + 1);
       Serial.println(delayTime);
       
       for(int i = 0; i <= soundPeak; i++){
