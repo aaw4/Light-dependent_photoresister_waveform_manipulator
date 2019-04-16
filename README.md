@@ -32,8 +32,6 @@
  - Sequencer
  - Photoresister Keyboard
 
-![](image.png)
-
 
 **Free Software + Hardware Project, Hell Yeah!**
 =
