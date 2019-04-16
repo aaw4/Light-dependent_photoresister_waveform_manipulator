@@ -3,6 +3,8 @@
 ### Light-dependent photoresistor waveform manipulator will help you relax! You are going to LOVE it!
 
   - Magic
+  
+![Minye Wu](https://github.com/MinyeGit/Light-dependent_photoresister_waveform_manipulator/blob/master/arduino-led-and-light-control.gif)
 
 # New Features!
  - High fidelity frequency controller/pwm
