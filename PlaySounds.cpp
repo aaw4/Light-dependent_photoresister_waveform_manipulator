@@ -6,7 +6,27 @@
 
 void PlaySounds::run(bool* PH, bool* BS, int* KN)
 {
-    
+    //BS[0] will be the waveform cycle button
+    if(BS[0] == HIGH)
+      updateWaveform();
+      
+    //BS[1] will be the sequencer start/stop button, BS[2] will be the sequencer record button
+    if(BS[1] == HIGH)
+      sequencerStartStop();
+    else if(BS[2] == HIGH)
+      sequencerRecord();
+
+    //BS[3] will be the secret function, whatever that may be
+    if(BS[3] == HIGH)
+      secret();
+
+    //play sound for each phr that is activated
+    for(int rep = 0; rep< 12; rep++)
+    {
+      if(PH[rep])
+        playSound(rep); // which phr it is; for which note on the scale it is
+        
+    }
 }
 
 void PlaySounds::stop()
@@ -31,15 +51,23 @@ void  PlaySounds::updateWaveform()
     waveform = 's';
 }
 
-void  PlaySounds::playSound()
+void  PlaySounds::playSound(int note)
 {
-    
+    if(waveform == 's')
+      sine();
+    else if(waveform == 't')
+      sawtooth();
+    else
+      pulse();
+    //if(note == 0)
+      //Serial.println("test");
 }
                  
 void  PlaySounds::sine()
 {
   //could be better
   sw.playTone(hertz);
+  
     
 }
 
@@ -97,3 +125,9 @@ void  PlaySounds::ADSR()
 {
     
 }
+
+void PlaySounds::sequencerStartStop() {}
+
+void PlaySounds::sequencerRecord(){}
+
+void PlaySounds::secret() {}

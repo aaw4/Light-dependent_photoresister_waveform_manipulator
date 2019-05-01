@@ -38,17 +38,13 @@ int STARTBSPIN = 0;
 int STARTKNPIN = A11;
 
 
-
-
-
-
-
 void updatePHR(bool* PHR)
 {
     for(int rep = 0; rep< 12; rep++)
     {
         //something like this
-        PHR[rep] = (analogRead(rep + STARTPHRPIN) < lightCal - sensitivity);
+        PHR[rep] = (analogRead(rep + STARTPHRPIN) < (lightCal - sensitivity));
+        Serial.println(PHR[0]);
      
     }
 }
@@ -78,6 +74,9 @@ void setup()
     analogWriteResolution(10);
     Serial.begin(9600);
 
+    pinMode(STARTSWITCHPIN, INPUT_PULLUP); // sets start pin mode. i think PULLUP does automatic debouncing
+    pinMode(STARTLEDPIN, OUTPUT); // DECLARE THAT FIRST SUCKA AS OUTPUT !!!!!!!!!!!!
+    
     lightCal = analogRead(STARTPHRPIN); //initialized light calibration value at first PHR
     //maybe change this to an average of all of them at startup
 }
@@ -85,20 +84,20 @@ void setup()
 void loop()
 {
     //change switch pin
-    on = digitalRead(STARTSWITCHPIN);
+    //on = digitalRead(STARTSWITCHPIN);
+    on = true;
     if(on)
     {
         //ON led
-        digitalWrite(STARTLEDPIN, HIGH);
-            
+        digitalWrite(STARTLEDPIN, HIGH); 
+        
         //update input values
         updatePHR(PHR);
         updateBS(BS);
         updateKN(KN);
         
         //This exec function will update output values given the input
-        //output values : leds, aux, bluetooth
-        
+        //output values : leds, aux, bluetooth     
         exec.run(PHR, BS, KN);
         
         
@@ -108,6 +107,8 @@ void loop()
     {
         //ON led
         digitalWrite(STARTLEDPIN, LOW);
+
+        //stop will stop all sounds from being output. This essentially sets the volume to 0.
         exec.stop();
     }
     

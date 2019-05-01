@@ -28,8 +28,9 @@ class PlaySounds
             
     
             void updateWaveform();
-            void playSound(); // will play sound according to which phr is activated
+            void playSound(int note); // will play sound according to which phr is activated
                               // and ADSR settings and filter settings and waveform settings
+                              // int note will be which note on the scale to play
             void sine();
             void pulse();
             void sawtooth();
@@ -40,6 +41,11 @@ class PlaySounds
             void adder(); // adds the waves of the different PHRS
             void mult(); // maybe epic
             void ADSR();
+
+            void sequencerStartStop();
+            void sequencerRecord();
+
+            void secret();
 
             
             
