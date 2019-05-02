@@ -23,8 +23,13 @@ class PlaySounds
             char waveform = 'q';
 
             int hertz = 400;
+            int volume = 0; // from 0 to 1023
 
-            int delayTime = 1000000 / (hertz * 2);
+            double delayTime = 1000000 / (hertz * 2);
+            int soundPeak = 4095;
+            double delayTimeSaw = (1000000 / (2*hertz))/(soundPeak + 1);
+
+            int sustainTime = 1.0 * 1000000; //in seconds
             
     
             void updateWaveform();
@@ -46,6 +51,10 @@ class PlaySounds
             void sequencerRecord();
 
             void secret();
+
+            void clearPHR();
+            void clearBS();
+            void clearKN();
 
             
             

@@ -21,10 +21,11 @@ void PlaySounds::run(bool* PH, bool* BS, int* KN)
       secret();
 
     //play sound for each phr that is activated
-    for(int rep = 0; rep< 12; rep++)
+    for(int rep = 0; rep< 1; rep++)
     {
       if(PH[rep])
         playSound(rep); // which phr it is; for which note on the scale it is
+      
         
     }
 }
@@ -32,6 +33,34 @@ void PlaySounds::run(bool* PH, bool* BS, int* KN)
 void PlaySounds::stop()
 {
     hertz = 0;
+    volume = 0;
+    clearPHR();
+    clearBS();
+    clearKN();
+}
+
+void PlaySounds::clearPHR()
+{
+  for(int rep = 0; rep<12; rep++)
+  {
+    PHR[rep] = false;
+  }
+}
+
+void PlaySounds::clearBS()
+{
+  for(int rep = 0; rep<4; rep++)
+  {
+    BS[rep] = false;
+  }
+}
+
+void PlaySounds::clearKN()
+{
+  for(int rep = 0; rep<4; rep++)
+  {
+    KN[rep] = 0;
+  }
 }
 
 void  PlaySounds::updateWaveform()
@@ -57,46 +86,43 @@ void  PlaySounds::playSound(int note)
       sine();
     else if(waveform == 't')
       sawtooth();
-    else
+    else if (waveform == 'q')
       pulse();
-    //if(note == 0)
-      //Serial.println("test");
 }
                  
 void  PlaySounds::sine()
 {
-  //could be better
-  sw.playTone(hertz);
+  //kind of working
+  sw.playTone(800);
+  
   
     
 }
 
 void  PlaySounds::pulse()
 {
-
   //done
-  analogWrite(DAC0, 1023);
-  delayMicroseconds(delayTime);
-  analogWrite(DAC0, 0);
-  delayMicroseconds(delayTime);
+  for(int rep = 0; rep< sustainTime; rep+= delayTime*3)
+  {
+    delayTime = 1000000 / (200 * 2);
+    analogWrite(DAC1, 4095);
+    delayMicroseconds(delayTime);
+    analogWrite(DAC1, 0);
+    delayMicroseconds(delayTime);
+    //Serial.println("test");
+  }
+  
     
 }
 
 void  PlaySounds::sawtooth()
 {
-  //maybe done
-
-  hertz = analogRead(A1);
-  
-  if(hertz == 0) hertz = 1;
-  int soundPeak = 1023;
-  int delayTime = (1000000 / (hertz))/(soundPeak + 1);
-  Serial.println(delayTime);
+//maybe done
   
   for(int i = 0; i <= soundPeak; i++)
   {
-    analogWrite(DAC0, i);
-    delayMicroseconds(delayTime);
+    analogWrite(DAC1, i);
+    delayMicroseconds(delayTimeSaw);
   }
     
 }
