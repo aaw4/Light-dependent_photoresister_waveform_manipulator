@@ -6,13 +6,16 @@
 
 #include <DueTimer.h>    // use the DueTimer library for timing
 #include <SineWaveDue.h>
-#define OUTPIN  DAC0
+#define OUTPIN  DAC1
 
 class PlaySounds
 {
     public:
             void run(bool* PH, bool* BS, int* KN);
             void stop();
+            PlaySounds();
+            ~PlaySounds(){}
+            
          
     
     private:
@@ -22,21 +25,22 @@ class PlaySounds
     
             char waveform = 'q';
 
-            int hertz = 400;
-            int volume = 0; // from 0 to 1023
+            bool initial = false;
 
-            double delayTime = 1000000 / (hertz * 2);
-            int soundPeak = 4095;
-            double delayTimeSaw = (1000000 / (2*hertz))/(soundPeak + 1);
-
-            int sustainTime = 1.0 * 1000000; //in seconds
+            bool once = true;
             
+            int volume = 1023;
+
+            int hertz = 100;
+
+            int delayTime = 1000000 / (hertz * 2);
+
+            int delayTimeSawtooth;
     
             void updateWaveform();
-            void playSound(int note); // will play sound according to which phr is activated
+            void playSound(int rep); // will play sound according to which phr is activated
                               // and ADSR settings and filter settings and waveform settings
-                              // int note will be which note on the scale to play
-            void sine();
+            void sine(int rep);
             void pulse();
             void sawtooth();
             
@@ -46,15 +50,6 @@ class PlaySounds
             void adder(); // adds the waves of the different PHRS
             void mult(); // maybe epic
             void ADSR();
-
-            void sequencerStartStop();
-            void sequencerRecord();
-
-            void secret();
-
-            void clearPHR();
-            void clearBS();
-            void clearKN();
 
             
             

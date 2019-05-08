@@ -3,128 +3,154 @@
 #include "PlaySounds.h"
 #include <DueTimer.h>
 
+PlaySounds::PlaySounds()
+{
+    digitalWrite(26, HIGH);
+    digitalWrite(28, LOW);
+    digitalWrite(30, LOW);
+}
 
 void PlaySounds::run(bool* PH, bool* BS, int* KN)
 {
-    //BS[0] will be the waveform cycle button
-    if(BS[0] == HIGH)
+
+  if(initial == false)
+  {
+   
+    digitalWrite(26, HIGH);
+    digitalWrite(28, LOW);
+    digitalWrite(30, LOW);
+    waveform = 'q';
+    
+    initial = true;
+  }
+  
+  if(BS[3])
+  {
+    BS[3] = 0;
+    if(once)
+    {
+      once = false;
       updateWaveform();
       
-    //BS[1] will be the sequencer start/stop button, BS[2] will be the sequencer record button
-    if(BS[1] == HIGH)
-      sequencerStartStop();
-    else if(BS[2] == HIGH)
-      sequencerRecord();
-
-    //BS[3] will be the secret function, whatever that may be
-    if(BS[3] == HIGH)
-      secret();
-
-    //play sound for each phr that is activated
-    for(int rep = 0; rep< 1; rep++)
-    {
-      if(PH[rep])
-        playSound(rep); // which phr it is; for which note on the scale it is
-      
-        
     }
+  }
+
+  for(int rep = 0; rep<12; rep++)
+  {
+    
+    if(PH[rep])
+    {
+      playSound(rep);
+    }
+  }
+  
+    
 }
 
 void PlaySounds::stop()
 {
     hertz = 0;
-    volume = 0;
-    clearPHR();
-    clearBS();
-    clearKN();
-}
-
-void PlaySounds::clearPHR()
-{
-  for(int rep = 0; rep<12; rep++)
-  {
-    PHR[rep] = false;
-  }
-}
-
-void PlaySounds::clearBS()
-{
-  for(int rep = 0; rep<4; rep++)
-  {
-    BS[rep] = false;
-  }
-}
-
-void PlaySounds::clearKN()
-{
-  for(int rep = 0; rep<4; rep++)
-  {
-    KN[rep] = 0;
-  }
+    digitalWrite(26, LOW);
+    digitalWrite(28, LOW);
+    digitalWrite(30, LOW);
+    initial = false;
+    
 }
 
 void  PlaySounds::updateWaveform()
 {
 
   //done
-
+  Serial.println(waveform);
   if(waveform == 't')
   {
     waveform = 'q';
+    digitalWrite(26, HIGH);
+    digitalWrite(28, LOW);
+    digitalWrite(30, LOW);
+    
+  }
+  else if(waveform == 'q')
+  {
+    waveform = 's';
+    digitalWrite(26, LOW);
+    digitalWrite(28, HIGH);
+    digitalWrite(30, LOW);
   }
   else if(waveform == 's')
   {
     waveform = 't';
+    digitalWrite(26, LOW);
+    digitalWrite(28, LOW);
+    digitalWrite(30, HIGH);
   }
-  else
-    waveform = 's';
+  once =true;
 }
 
-void  PlaySounds::playSound(int note)
+void  PlaySounds::playSound(int rep)
 {
-    if(waveform == 's')
-      sine();
-    else if(waveform == 't')
-      sawtooth();
-    else if (waveform == 'q')
-      pulse();
-}
-                 
-void  PlaySounds::sine()
-{
-  //kind of working
-  sw.playTone(800);
+
+  hertz = 440 * pow(1.059463094359, rep - 9);
+  delayTime = 1000000 / (hertz * 2);
   
+  if(waveform == 'q')
+  {
+    pulse();
+    
+  }
+
+  else if(waveform == 's')
+  {
+    sine(rep);
+  }
+
+  else if(waveform == 't')
+  {
+    sawtooth();
+    
+  }
   
     
+}
+                 
+void  PlaySounds::sine(int rep)
+{ 
+  sw.playTone(hertz);
+  while(analogRead(rep + A0) < 100){
+    
+  }
+  sw.stopTone();
 }
 
 void  PlaySounds::pulse()
 {
+
   //done
-  for(int rep = 0; rep< sustainTime; rep+= delayTime*3)
-  {
-    delayTime = 1000000 / (200 * 2);
-    analogWrite(DAC1, 4095);
-    delayMicroseconds(delayTime);
-    analogWrite(DAC1, 0);
-    delayMicroseconds(delayTime);
-    //Serial.println("test");
-  }
-  
+  analogWrite(DAC1, volume);
+  delayMicroseconds(delayTime);
+  analogWrite(DAC1, 0);
+  delayMicroseconds(delayTime);
     
 }
 
 void  PlaySounds::sawtooth()
 {
-//maybe done
+  /**
+   * 
+   * LOL FIX THIS SHIT
+   *
+  if(hertz == 0) hertz = 1;
   
-  for(int i = 0; i <= soundPeak; i++)
+  delayTimeSawtooth = (1000000 / (hertz))/((volume/10) + 1);
+
+  Serial.println(delayTimeSawtooth);
+  
+  for(int i = 0; i <= (volume/10); i+=10)
   {
     analogWrite(DAC1, i);
-    delayMicroseconds(delayTimeSaw);
+    delayMicroseconds(delayTimeSawtooth);
   }
-    
+   **/ 
 }
 
 void  PlaySounds::lpf()
@@ -151,9 +177,3 @@ void  PlaySounds::ADSR()
 {
     
 }
-
-void PlaySounds::sequencerStartStop() {}
-
-void PlaySounds::sequencerRecord(){}
-
-void PlaySounds::secret() {}
