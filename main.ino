@@ -114,6 +114,8 @@ void setup()
     pinMode(28, OUTPUT); // saw 
     pinMode(30, OUTPUT); // sine
 
+    pinMode(32, OUTPUT); //record
+    pinMode(34, OUTPUT); //start
 
     pinMode(12, INPUT_PULLUP); // start switch
     pinMode(2, INPUT_PULLUP); // start switch
@@ -130,6 +132,7 @@ void setup()
 
 void loop()
 {
+ 
     //change switch pin
     on = digitalRead(STARTSWITCHPIN);
     if(on)

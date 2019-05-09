@@ -6,7 +6,9 @@
 
 #include <DueTimer.h>    // use the DueTimer library for timing
 #include <SineWaveDue.h>
+#include <LinkedList.h>
 #define OUTPIN  DAC1
+
 
 class PlaySounds
 {
@@ -27,6 +29,19 @@ class PlaySounds
 
             bool initial = false;
 
+            bool * temp = new bool[12];
+
+            int tempo = 50;
+
+            bool playing = false;
+            bool recording = false;
+
+            LinkedList<bool*> keysRecord = LinkedList<bool*>();
+
+
+            bool recordPressed = false;
+            int record = 0;
+
             bool once = true;
             
             int volume = 1023;
@@ -43,6 +58,9 @@ class PlaySounds
             void sine(int rep);
             void pulse();
             void sawtooth();
+
+            void updatePHR(bool * PHR);
+
             
     
             void lpf(); // appends the filter to the wave code
